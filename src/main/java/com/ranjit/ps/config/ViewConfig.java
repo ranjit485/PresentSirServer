@@ -14,7 +14,7 @@ public class ViewConfig {
     public InternalResourceViewResolver internalResourceViewResolver(){
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
         viewResolver.setSuffix(".jsp");
-        viewResolver.setPrefix("WEB-INF/views/");
+        viewResolver.setPrefix("/WEB-INF/views/");
         return viewResolver;
     }
 }

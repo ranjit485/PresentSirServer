@@ -1,9 +1,9 @@
 package com.ranjit.ps.config;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
 import com.mysql.cj.jdbc.AbandonedConnectionCleanupThread;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
 
 
 @WebListener

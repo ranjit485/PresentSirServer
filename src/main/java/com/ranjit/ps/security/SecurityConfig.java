@@ -19,15 +19,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() // Disable CSRF for testing; you may want to enable it in production
+                .csrf().disable() // Disable CSRF for testing; enable in production as needed
                 .authorizeRequests()
                 .requestMatchers("/Presentsir/api/auth**").permitAll() // Allow unauthenticated access to auth endpoints
-                .requestMatchers("/Presentsir/api/users**").hasAnyRole("ROLE_ADMIN") // Allow unauthenticated access to auth endpoints
-                .requestMatchers("/Presentsir/api/roles**").hasAnyRole("ROLE_ADMIN") // Allow unauthenticated access to auth endpoints
-                .requestMatchers("/Presentsir/api/buses**").hasAnyRole("ROLE_ADMIN") // Allow unauthenticated access to auth endpoints
+                .requestMatchers("/Presentsir/api/users**").hasRole("ADMIN") // Access restricted to ADMIN role
+                .requestMatchers("/Presentsir/register").permitAll()// Access restricted to ADMIN role
+                .requestMatchers("/Presentsir/api/roles**").hasRole("ADMIN") // Access restricted to ADMIN role
+                .requestMatchers("/Presentsir/api/buses**").hasRole("ADMIN") // Access restricted to ADMIN role
                 .anyRequest().authenticated() // Protect all other endpoints
                 .and()
-                .httpBasic(); // Use Basic Authentication; change this if you're using JWT
+                .httpBasic(); // Use Basic Authentication; change if using JWT
 
         return http.build();
     }
@@ -47,9 +48,8 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Define your UserDetailsService bean here if not already defined
-     @Bean
-     public UserDetailsService userDetailsService() {
-         return new MyUserDetailsService(); // Replace with your UserDetailsService implementation
-     }
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new MyUserDetailsService(); // Replace with your UserDetailsService implementation
+    }
 }

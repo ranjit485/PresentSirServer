@@ -18,5 +18,6 @@ public class AuthController {
     }
 
 
+
     // Add login and JWT generation logic here
 }
