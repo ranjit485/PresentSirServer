@@ -1,7 +1,9 @@
 package com.ranjit.ps.service;
 
+import com.ranjit.ps.model.Role;
 import com.ranjit.ps.model.User;
 import com.ranjit.ps.model.Bus;
+import com.ranjit.ps.repository.RoleRepository;
 import com.ranjit.ps.repository.UserRepository;
 import com.ranjit.ps.repository.BusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +25,34 @@ public class UserService {
     private PasswordEncoder encoder;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private BusRepository busRepository;
 
     public User saveUser(User user) {
         user.setPassword(encoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
+    public User registerUser(User user, Long busId) {
+        // Hash the password
+        user.setPassword(encoder.encode(user.getPassword()));
+
+        // Set the Bus entity for the User
+        Bus bus = busRepository.findById(busId)
+                .orElseThrow(() -> new RuntimeException("Bus not found"));
+        user.setBus(bus);
+
+        // Assign the default "User" role
+        Role defaultRole = roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("Default role 'User' not found"));
+        user.getRoles().add(defaultRole);
+
+        // Save the User
+        return userRepository.save(user);
+    }
+
+
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -42,6 +66,8 @@ public class UserService {
         return userRepository.findById(email).map(user -> {
             user.setName(userDetails.getName());
             user.setBus(userDetails.getBus());
+            user.setContact(userDetails.getContact());
+            user.setGender(userDetails.getGender());
             user.setPassword(encoder.encode(userDetails.getPassword()));
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("User not found with email " + email));

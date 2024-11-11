@@ -1,7 +1,6 @@
-package com.ranjit.ps.controller;
+package com.ranjit.ps.controller.api;
 
 import com.ranjit.ps.model.Role;
-import com.ranjit.ps.model.User;
 import com.ranjit.ps.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/Presentsir/api/roles")
-public class RoleController {
+public class RestRoleController {
 
     @Autowired
     private RoleService roleService;

@@ -1,4 +1,4 @@
-package com.ranjit.ps.controller;
+package com.ranjit.ps.controller.api;
 
 import com.ranjit.ps.model.User;
 import com.ranjit.ps.service.UserService;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/Presentsir/api/users")
-public class UserController {
+public class RestUserController {
 
     @Autowired
     private UserService userService;

@@ -14,6 +14,9 @@ public class User {
     private String password;
     private String name;
 
+    private String contact;
+    private String gender;
+
     @ManyToOne
     @JoinColumn(name = "bus_id") // Foreign key linking to Bus
     private Bus bus; // A user can be assigned to only one bus
@@ -29,10 +32,14 @@ public class User {
     public User() {
     }
 
-    public User(String email, String password, String name) {
+    public User(String email, String password, String name, String contact, String gender, Bus bus, Set<Role> roles) {
         this.email = email;
-        this.password = hashPassword(password);
+        this.password = password;
         this.name = name;
+        this.contact = contact;
+        this.gender = gender;
+        this.bus = bus;
+        this.roles = roles;
     }
 
     // Hash the password before saving
@@ -54,8 +61,12 @@ public class User {
     public String toString() {
         return "User{" +
                 "email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
-                ", bus=" + (bus != null ? bus.getBusId() : "null") +
+                ", contact='" + contact + '\'' +
+                ", gender='" + gender + '\'' +
+                ", bus=" + bus +
+                ", roles=" + roles +
                 '}';
     }
 
@@ -97,5 +108,21 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

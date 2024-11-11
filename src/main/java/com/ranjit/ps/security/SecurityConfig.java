@@ -21,12 +21,21 @@ public class SecurityConfig {
         http
                 .csrf().disable() // Disable CSRF for testing; enable in production as needed
                 .authorizeRequests()
-                .requestMatchers("/Presentsir/api/auth**").permitAll() // Allow unauthenticated access to auth endpoints
+                .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/Presentsir/api/auth**").permitAll()  // Allow unauthenticated access to auth endpoints
+                .requestMatchers("/Presentsir/register", "/login").permitAll()  // Allow unauthenticated access to login and register
                 .requestMatchers("/Presentsir/api/users**").hasRole("ADMIN") // Access restricted to ADMIN role
-                .requestMatchers("/Presentsir/register").permitAll()// Access restricted to ADMIN role
                 .requestMatchers("/Presentsir/api/roles**").hasRole("ADMIN") // Access restricted to ADMIN role
                 .requestMatchers("/Presentsir/api/buses**").hasRole("ADMIN") // Access restricted to ADMIN role
+                .requestMatchers("/Presentsir**").hasRole("ADMIN") // Access restricted to ADMIN role
                 .anyRequest().authenticated() // Protect all other endpoints
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .failureUrl("/login?error=true")
+                .loginProcessingUrl("/login") // Ensure form login is properly processed
+                .defaultSuccessUrl("/defaultPage", false) // Redirect to /home after successful login
+                .permitAll()
                 .and()
                 .httpBasic(); // Use Basic Authentication; change if using JWT
 

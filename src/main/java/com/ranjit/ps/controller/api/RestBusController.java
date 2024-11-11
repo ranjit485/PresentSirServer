@@ -1,4 +1,4 @@
-package com.ranjit.ps.controller;
+package com.ranjit.ps.controller.api;
 
 import com.ranjit.ps.model.Bus;
 import com.ranjit.ps.service.BusService;
@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/Presentsir/api/buses")
-public class BusController {
+public class RestBusController {
 
     @Autowired
     private BusService busService;
