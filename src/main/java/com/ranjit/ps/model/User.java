@@ -1,5 +1,6 @@
 package com.ranjit.ps.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -20,14 +21,16 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "bus_id") // Foreign key linking to Bus
+    @JsonBackReference
     private Bus bus; // A user can be assigned to only one bus
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "User_Roles",
             joinColumns = @JoinColumn(name = "user_email"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @JsonBackReference
     private Set<Role> roles = new HashSet<>();
 
     public User() {
