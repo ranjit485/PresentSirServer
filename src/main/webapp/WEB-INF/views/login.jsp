@@ -8,7 +8,7 @@
   class="light-style layout-wide customizer-hide"
   dir="ltr"
   data-theme="theme-default"
-  data-assets-path="${pagecontext.request.contextpath}/resources/"
+  data-assets-path="resources/"
   data-template="vertical-menu-template-free"
   data-style="light">
   <head>
@@ -22,7 +22,7 @@
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="${pagecontext.request.contextpath}/resources/img/favicon/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="resources/img/favicon/favicon.ico" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,25 +31,25 @@
       href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
       rel="stylesheet" />
 
-    <link rel="stylesheet" href="${pagecontext.request.contextpath}/resources/vendor/fonts/boxicons.css" />
+    <link rel="stylesheet" href="resources/vendor/fonts/boxicons.css" />
 
     <!-- Core CSS -->
-    <link rel="stylesheet" href="${pagecontext.request.contextpath}/resources/vendor/css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet" href="${pagecontext.request.contextpath}/resources/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet" href="${pagecontext.request.contextpath}/resources/css/demo.css" />
+    <link rel="stylesheet" href="resources/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="resources/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="resources/css/demo.css" />
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet" href="${pagecontext.request.contextpath}/resources/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="resources/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
     <!-- Page CSS -->
     <!-- Page -->
-    <link rel="stylesheet" href="${pagecontext.request.contextpath}/resources/vendor/css/pages/page-auth.css" />
+    <link rel="stylesheet" href="resources/vendor/css/pages/page-auth.css" />
 
     <!-- Helpers -->
-    <script src="${pagecontext.request.contextpath}/resources/vendor/js/helpers.js"></script>
+    <script src="resources/vendor/js/helpers.js"></script>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-    <script src="${pagecontext.request.contextpath}/resources/js/config.js"></script>
+    <script src="resources/js/config.js"></script>
   </head>
 
   <body>
@@ -65,7 +65,7 @@
               <h4 class="mb-1">Welcome to Present Sir! 👋</h4>
               <p class="mb-6">Please sign-in to your account and start tracking your bus</p>
 
-              <form:form  id="formAuthentication" class="mb-6" action="/Presentsir/login" method="post">
+              <form:form  id="formAuthentication" class="mb-6" action="${pageContext.request.contextPath}/login" method="post">
                 <div class="mb-6">
                   <label for="email" class="form-label">Email or Username</label>
                   <input
@@ -109,18 +109,18 @@
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
 
-    <script src="${pagecontext.request.contextpath}/resources/vendor/libs/jquery/jquery.js"></script>
-    <script src="${pagecontext.request.contextpath}/resources/vendor/libs/popper/popper.js"></script>
-    <script src="${pagecontext.request.contextpath}/resources/vendor/js/bootstrap.js"></script>
-    <script src="${pagecontext.request.contextpath}/resources/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-    <script src="${pagecontext.request.contextpath}/resources/vendor/js/menu.js"></script>
+    <script src="resources/vendor/libs/jquery/jquery.js"></script>
+    <script src="resources/vendor/libs/popper/popper.js"></script>
+    <script src="resources/vendor/js/bootstrap.js"></script>
+    <script src="resources/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="resources/vendor/js/menu.js"></script>
 
     <!-- endbuild -->
 
     <!-- Vendors JS -->
 
     <!-- Main JS -->
-    <script src="${pagecontext.request.contextpath}/resources/js/main.js"></script>
+    <script src="resources/js/main.js"></script>
 
     <!-- Page JS -->
 

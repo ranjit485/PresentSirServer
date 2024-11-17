@@ -14,7 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 @Controller
-@RequestMapping("/Presentsir/")
+@RequestMapping("/")
 public class AuthController {
 
     @Autowired
@@ -45,7 +45,7 @@ public class AuthController {
             String messages = DiscordMessageFormatter.formatUserJoinedMessage(user);
             new DiscordWebhookService().sendDiscordMessage(messages);
 
-            return "redirect:/Presentsir/login";
+            return "redirect:/login";
         } catch (Exception e) {
             result.rejectValue("email", "error.user", "An error occurred during registration.");
             return "register";
@@ -66,7 +66,7 @@ public class AuthController {
     public String redirectToHomePage(Authentication authentication) {
         return authentication.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))
-                ? "redirect:/Presentsir/index" : "redirect:/Presentsir/success";
+                ? "redirect:/index" : "redirect:/success";
     }
 
     // Success page for general users

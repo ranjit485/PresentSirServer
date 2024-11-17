@@ -8,6 +8,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,21 +24,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**","/WEB-INF/views/**").permitAll()
+                        .requestMatchers("/resources/vendor/**").permitAll()
                         .requestMatchers("/actuator/mappings").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/Presentsir/login", "/Presentsir/register").permitAll()
-                        .requestMatchers("/Presentsir/index", "/Presentsir/users", "/Presentsir/buses").hasRole("ADMIN")
-                        .anyRequest().permitAll()
+                        .requestMatchers("/login", "/register").permitAll()
+                        .requestMatchers("/index", "/users", "/buses").hasRole("ADMIN")
+                        .requestMatchers("/api/users").hasRole("ADMIN")
+
+                        .anyRequest().authenticated()
                 )
-                .formLogin()
-                .loginPage("/Presentsir/login") // Specify custom login page URL
-                .loginProcessingUrl("/Presentsir/login") // URL to process the login form
-                .defaultSuccessUrl("/Presentsir/defaultPage", true) // Redirect after successful login
-                .failureUrl("/login?error=true") // Redirect to login with error query parameter if login fails
-                .permitAll();
+                .formLogin(form->form
+                    .loginPage("/login").permitAll()
+                    .loginProcessingUrl("/login").permitAll()
+                    .defaultSuccessUrl("/defaultPage", true).permitAll()
+                    .failureUrl("/login?error=true") // Redirect to login with error query parameter if login fails
+                    .permitAll()
+                );
 
         return http.build();
     }
