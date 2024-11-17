@@ -1,6 +1,7 @@
 package com.ranjit.ps.security;
 
 import com.ranjit.ps.service.MyUserDetailsService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,18 +32,35 @@ public class SecurityConfig {
                         .requestMatchers("/resources/vendor/**").permitAll()
                         .requestMatchers("/actuator/mappings").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/login", "/register").permitAll()
+                        .requestMatchers("/login", "/register","/login?error=true").permitAll()
                         .requestMatchers("/index", "/users", "/buses").hasRole("ADMIN")
                         .requestMatchers("/api/users").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
                 .formLogin(form->form
-                    .loginPage("/login").permitAll()
-                    .loginProcessingUrl("/login").permitAll()
-                    .defaultSuccessUrl("/defaultPage", true).permitAll()
-                    .failureUrl("/login?error=true") // Redirect to login with error query parameter if login fails
+                    .loginPage("/login")
+                    .loginProcessingUrl("/login")
+                    .defaultSuccessUrl("/defaultPage", true)
+                    .failureUrl("/login?error=true")
                     .permitAll()
+                )
+                .httpBasic(Customizer.withDefaults())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            // Return 401 for unauthenticated REST API requests
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            // Return 403 for forbidden requests
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+                        })
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)  // If sessions are required, create them
+                        .invalidSessionUrl("/login?error=true")  // Redirect on session timeout or invalid session
+                        .maximumSessions(1)  // Limit number of sessions per user
+                        .expiredUrl("/login?error=true")  // Redirect on session expiration
                 );
 
         return http.build();

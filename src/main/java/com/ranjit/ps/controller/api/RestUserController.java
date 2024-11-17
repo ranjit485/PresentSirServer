@@ -4,6 +4,7 @@ import com.ranjit.ps.model.User;
 import com.ranjit.ps.service.UserService;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class RestUserController {
     }
 
     @GetMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
