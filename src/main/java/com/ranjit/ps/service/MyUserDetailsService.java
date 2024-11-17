@@ -19,13 +19,16 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        // Convert roles from User to SimpleGrantedAuthority, adding "ROLE_" prefix if needed
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
                 user.getRoles().stream()
-                        .map(role -> new SimpleGrantedAuthority(role.getName())) // Adjust role mapping as per your model
+                        .map(role -> new SimpleGrantedAuthority(role.getName())) // Add "ROLE_" prefix if necessary
                         .collect(Collectors.toList())
         );
     }
+
 }

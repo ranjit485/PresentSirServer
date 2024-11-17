@@ -1,29 +1,21 @@
 package com.ranjit.ps.controller;
 
+import com.ranjit.ps.model.DiscordMessage;
 import com.ranjit.ps.model.User;
 import com.ranjit.ps.repository.BusRepository;
-import com.ranjit.ps.service.AuthService;
+import com.ranjit.ps.service.DiscordWebhookService;
 import com.ranjit.ps.service.UserService;
+import com.ranjit.ps.utils.DiscordMessageFormatter;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 @Controller
 @RequestMapping("/Presentsir/")
 public class AuthController {
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     @Autowired
     private UserService userService;
@@ -31,26 +23,16 @@ public class AuthController {
     @Autowired
     private BusRepository busRepository;
 
-    // Show login page
-    @GetMapping("/success")
-    public String showSuccessPage(Model model) {
-        return "success"; // Return the success page
-    }
-
-    @GetMapping("/defaultPage")
-    public String redirectToHomePage(Authentication authentication) {
-        return authentication.getAuthorities().stream()
-                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))
-                ? "redirect:/index" : "redirect:/success";
-    }
-
+    // Show registration page
     @GetMapping("/register")
     public String showRegistrationPage(Model model) {
+        System.out.println("caoo");
         model.addAttribute("user", new User());
         model.addAttribute("buses", busRepository.findAll());
         return "register";
     }
 
+    // Handle registration form submission
     @PostMapping("/register")
     public String registerUser(@ModelAttribute("user") @Valid User user, BindingResult result,
                                @RequestParam("busId") long busId) {
@@ -59,9 +41,13 @@ public class AuthController {
         }
         try {
             userService.registerUser(user, busId);
-            return "redirect:/login";
+
+            String messages = DiscordMessageFormatter.formatUserJoinedMessage(user);
+            new DiscordWebhookService().sendDiscordMessage(messages);
+
+            return "redirect:/Presentsir/login";
         } catch (Exception e) {
-            result.rejectValue(null, "error.user", "There was an error processing your registration.");
+            result.rejectValue("email", "error.user", "An error occurred during registration.");
             return "register";
         }
     }
@@ -75,27 +61,17 @@ public class AuthController {
         return "login";
     }
 
-    // Handle login form submission
-    @PostMapping("/login")
-    public String loginUser(@RequestParam("email") String email, @RequestParam("password") String password,
-                            Model model) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(email, password)
-            );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+    // Redirect based on role after login
+    @GetMapping("/defaultPage")
+    public String redirectToHomePage(Authentication authentication) {
+        return authentication.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))
+                ? "redirect:/Presentsir/index" : "redirect:/Presentsir/success";
+    }
 
-            return authentication.getAuthorities()
-                    .contains(new SimpleGrantedAuthority("ROLE_ADMIN"))
-                    ? "redirect:/Presentsir/index"
-                    : "redirect:/Presentsir/success";
-
-        } catch (BadCredentialsException e) {
-            model.addAttribute("error", "Invalid email or password.");
-            return "login";
-        } catch (Exception e) {
-            model.addAttribute("error", "An unexpected error occurred.");
-            return "login";
-        }
+    // Success page for general users
+    @GetMapping("/success")
+    public String showSuccessPage() {
+        return "success";
     }
 }

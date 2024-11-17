@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "app_user") // Use a non-reserved name for the table
 public class User {
     @Id
     private String email; // Email as the primary key

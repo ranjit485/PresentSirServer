@@ -1,3 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+
 <!doctype html>
 
 <html
@@ -55,7 +58,6 @@
     <div class="container-xxl">
       <div class="authentication-wrapper authentication-basic container-p-y">
         <div class="authentication-inner">
-          <!-- Register -->
           <div class="card px-sm-6 px-0">
             <div class="card-body">
               <!-- Logo -->
@@ -63,14 +65,14 @@
               <h4 class="mb-1">Welcome to Present Sir! 👋</h4>
               <p class="mb-6">Please sign-in to your account and start tracking your bus</p>
 
-              <form id="formAuthentication" class="mb-6" action="${pageContext.request.contextPath}/Presentsir/login" method="post">
+              <form:form  id="formAuthentication" class="mb-6" action="/Presentsir/login" method="post">
                 <div class="mb-6">
                   <label for="email" class="form-label">Email or Username</label>
                   <input
                     type="text"
                     class="form-control"
                     id="email"
-                    name="email"
+                    name="username"
                     placeholder="Enter your email or username"
                     autofocus />
                 </div>
@@ -91,7 +93,7 @@
                 <div class="mb-6">
                   <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
                 </div>
-              </form>
+              </form:form>
               <p style="color: red;">${error}</p> <!-- Show error message if exists -->
 
             </div>
