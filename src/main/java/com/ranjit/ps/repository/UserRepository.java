@@ -9,4 +9,5 @@ public interface UserRepository extends JpaRepository<User, String> {
     // Custom query methods can be added here if needed
     void deleteByEmail(String email);
     Optional<User> findByEmail(String email);
+
 }

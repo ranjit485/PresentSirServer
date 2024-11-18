@@ -65,7 +65,7 @@
               <h4 class="mb-1">Welcome to Present Sir! 👋</h4>
               <p class="mb-6">Please sign-in to your account and start tracking your bus</p>
 
-              <form:form  id="formAuthentication" class="mb-6" action="${pageContext.request.contextPath}/login" method="post">
+              <form:form  id="formAuthentication" class="mb-6" action="${pageContext.request.contextPath}/perform_login" method="post">
                 <div class="mb-6">
                   <label for="email" class="form-label">Email or Username</label>
                   <input
