@@ -6,12 +6,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,17 +18,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.io.IOException;
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private JwtTokenProvider tokenProvider;
+
+    public SecurityConfig(JwtTokenProvider tokenProvider) {
+        this.tokenProvider = tokenProvider;
+    }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -39,11 +36,12 @@ public class SecurityConfig {
                         .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**", "/WEB-INF/views/**").permitAll()
                         .requestMatchers("/resources/vendor/**").permitAll()
                         .requestMatchers("/actuator/mappings").permitAll()
+                        .requestMatchers("/error", "/error/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/login", "/register", "/login?error=true").permitAll()
-                        .requestMatchers("/api/auth/**").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/index", "/users", "/buses").hasRole("ADMIN")
-                        .requestMatchers("/api/users").hasRole("ADMIN")
+                        .requestMatchers("/api/users").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -59,6 +57,7 @@ public class SecurityConfig {
                         .logoutSuccessHandler(logoutSuccessHandler())
                         .deleteCookies("JSESSIONID")
                 )
+                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
@@ -66,11 +65,7 @@ public class SecurityConfig {
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
                         })
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
-
         return http.build();
     }
 

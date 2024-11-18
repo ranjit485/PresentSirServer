@@ -22,7 +22,6 @@ public class RestUserController {
     }
 
     @GetMapping()
-    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
