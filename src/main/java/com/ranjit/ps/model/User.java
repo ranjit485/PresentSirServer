@@ -1,5 +1,6 @@
 package com.ranjit.ps.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -8,31 +9,41 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(name = "app_user") // Use a non-reserved name for the table
 public class User {
     @Id
     private String email; // Email as the primary key
     private String password;
     private String name;
 
+    private String contact;
+    private String gender;
+
     @ManyToOne
     @JoinColumn(name = "bus_id") // Foreign key linking to Bus
+    @JsonBackReference
     private Bus bus; // A user can be assigned to only one bus
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "User_Roles",
             joinColumns = @JoinColumn(name = "user_email"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
+    @JsonBackReference
     private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
-    public User(String email, String password, String name) {
+    public User(String email, String password, String name, String contact, String gender, Bus bus, Set<Role> roles) {
         this.email = email;
-        this.password = hashPassword(password);
+        this.password = password;
         this.name = name;
+        this.contact = contact;
+        this.gender = gender;
+        this.bus = bus;
+        this.roles = roles;
     }
 
     // Hash the password before saving
@@ -54,8 +65,12 @@ public class User {
     public String toString() {
         return "User{" +
                 "email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
-                ", bus=" + (bus != null ? bus.getBusId() : "null") +
+                ", contact='" + contact + '\'' +
+                ", gender='" + gender + '\'' +
+                ", bus=" + bus +
+                ", roles=" + roles +
                 '}';
     }
 
@@ -97,5 +112,21 @@ public class User {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

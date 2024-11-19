@@ -1,0 +1,20 @@
+{
+    "data": [
+      {
+        "id": "B1111",
+        "route":"Bhivghat"
+      },
+      {
+        "id": "B1112",
+        "route":"Tamkhadi"
+      },
+      {
+        "id": "B1111",
+        "route":"Aalsand"
+      },
+      {
+        "id": "B1113",
+        "route":"Aamnapur"
+      }
+]
+}
